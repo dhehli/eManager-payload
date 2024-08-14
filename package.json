@@ -44,6 +44,7 @@
     "@lexical/utils": "0.13.1",
     "@payloadcms/bundler-webpack": "^1.0.7",
     "@payloadcms/db-mongodb": "^1.5.1",
+    "@payloadcms/db-postgres": "^0.8.5",
     "@payloadcms/live-preview-react": "^0.2.0",
     "@payloadcms/plugin-cloud": "^3.0.1",
     "@payloadcms/plugin-form-builder": "^1.2.2",
