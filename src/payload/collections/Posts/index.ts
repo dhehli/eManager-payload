@@ -17,7 +17,7 @@ import { revalidatePost } from './hooks/revalidatePost'
 export const Posts: CollectionConfig = {
   access: {
     create: admins,
-    delete: () => false,
+    delete: admins,
     read: adminsOrPublished,
     update: admins,
   },
@@ -75,32 +75,28 @@ export const Posts: CollectionConfig = {
       },
       hasMany: true,
       relationTo: 'users',
+      required: false,
+      type: 'relationship',
+    },
+    {
+      name: 'type',
+      admin: {
+        position: 'sidebar',
+      },
+      label: 'Content Type',
+      relationTo: 'content-types',
       required: true,
       type: 'relationship',
     },
-    // This field is only used to populate the user data via the `populateAuthors` hook
-    // This is because the `user` collection has access control locked to protect user privacy
-    // GraphQL will also not return mutated user data that differs from the underlying schema
     {
-      name: 'populatedAuthors',
-      access: {
-        update: () => false,
-      },
+      name: 'themes',
       admin: {
-        disabled: true,
-        readOnly: true,
+        position: 'sidebar',
       },
-      fields: [
-        {
-          name: 'id',
-          type: 'text',
-        },
-        {
-          name: 'name',
-          type: 'text',
-        },
-      ],
-      type: 'array',
+      hasMany: true,
+      label: 'Content Themes',
+      relationTo: 'content-themes',
+      type: 'relationship',
     },
     {
       tabs: [
@@ -137,13 +133,7 @@ export const Posts: CollectionConfig = {
     },
     {
       name: 'relatedPosts',
-      filterOptions: ({ id }) => {
-        return {
-          id: {
-            not_in: [id],
-          },
-        }
-      },
+      filterOptions: ({ id }) => ({ id: { not_in: [id] } }),
       hasMany: true,
       relationTo: 'posts',
       type: 'relationship',
