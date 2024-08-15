@@ -24,6 +24,8 @@ import { clearDBEndpoint, resetDBEndpoint, seedDBEndpoint } from './endpoints/re
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
 import { Settings } from './globals/Settings'
+import ContentTheme from './collections/ContentTheme/ContentTheme'
+import ContentType from './collections/ContentType/ContentType'
 
 const generateTitle: GenerateTitle = () => {
   return 'Payload Public Demo'
@@ -66,7 +68,7 @@ export default buildConfig({
       },
     }),
   },
-  collections: [Pages, Posts, Projects, Media, Categories, Users, Comments],
+  collections: [Pages, Posts, Projects, Media, Categories, Users, Comments, ContentTheme, ContentType],
   cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   editor: lexicalEditor({}),
