@@ -13,6 +13,8 @@ import { buildConfig } from 'payload/config'
 
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
+import ContentTheme from './collections/ContentThemes/ContentTheme'
+import ContentType from './collections/ContentTypes/ContentType'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
@@ -24,8 +26,6 @@ import { clearDBEndpoint, resetDBEndpoint, seedDBEndpoint } from './endpoints/re
 import { Footer } from './globals/Footer'
 import { Header } from './globals/Header'
 import { Settings } from './globals/Settings'
-import ContentTheme from './collections/ContentTheme/ContentTheme'
-import ContentType from './collections/ContentType/ContentType'
 
 const generateTitle: GenerateTitle = () => {
   return 'Payload Public Demo'
@@ -68,7 +68,17 @@ export default buildConfig({
       },
     }),
   },
-  collections: [Pages, Posts, Projects, Media, Categories, Users, Comments, ContentTheme, ContentType],
+  collections: [
+    Pages,
+    Posts,
+    Projects,
+    Media,
+    Categories,
+    Users,
+    Comments,
+    ContentType,
+    ContentTheme,
+  ],
   cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   editor: lexicalEditor({}),
