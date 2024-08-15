@@ -87,8 +87,6 @@ export default buildConfig({
   },
   // database-adapter-config-start
   db: postgresAdapter({
-    // Postgres-specific arguments go here.
-    // `pool` is required.
     pool: {
       connectionString: process.env.DATABASE_URI,
     },
