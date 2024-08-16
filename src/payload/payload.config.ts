@@ -13,6 +13,8 @@ import { buildConfig } from 'payload/config'
 
 import Categories from './collections/Categories'
 import Comments from './collections/Comments'
+import ContentTheme from './collections/ContentThemes/ContentTheme'
+import ContentType from './collections/ContentTypes/ContentType'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
@@ -66,7 +68,17 @@ export default buildConfig({
       },
     }),
   },
-  collections: [Pages, Posts, Projects, Media, Categories, Users, Comments],
+  collections: [
+    Pages,
+    Posts,
+    Projects,
+    Media,
+    Categories,
+    Users,
+    Comments,
+    ContentType,
+    ContentTheme,
+  ],
   cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   editor: lexicalEditor({}),
