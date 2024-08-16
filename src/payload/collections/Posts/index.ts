@@ -103,6 +103,26 @@ export const Posts: CollectionConfig = {
       type: 'array',
     },
     {
+      name: 'types',
+      admin: {
+        position: 'sidebar',
+      },
+      label: 'Content Types',
+      relationTo: 'content-types',
+      required: true,
+      type: 'relationship',
+    },
+    {
+      name: 'themes',
+      admin: {
+        position: 'sidebar',
+      },
+      hasMany: true,
+      label: 'Content Themes',
+      relationTo: 'content-themes',
+      type: 'relationship',
+    },
+    {
       tabs: [
         {
           fields: [hero],
