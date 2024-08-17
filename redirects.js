@@ -1,8 +1,3 @@
-// Note: This will not work in dev mode and will throw an error upon startup
-// This is because the Payload APIs are not yet running when the Next.js server starts
-// This is not a problem in production as Payload is booted up before building Next.js
-// For this reason the errors can be silently ignored in dev mode
-
 module.exports = async () => {
   const internetExplorerRedirect = {
     destination: '/ie-incompatible.html',
@@ -22,60 +17,65 @@ module.exports = async () => {
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/redirects?limit=1000&depth=1`,
     )
 
-    const redirectsData = await redirectsRes.json()
-    const { docs } = redirectsData
+    const contentType = redirectsRes.headers.get('content-type')
 
-    let dynamicRedirects = []
+    if (contentType && contentType.includes('application/json')) {
+      const redirectsData = await redirectsRes.json()
+      const { docs } = redirectsData
 
-    if (docs) {
-      docs.forEach((doc) => {
-        const { from, to: { reference, type, url } = {} } = doc
+      let dynamicRedirects = []
 
-        let source = from
-          .replace(process.env.NEXT_PUBLIC_SERVER_URL, '')
-          .split('?')[0]
-          .toLowerCase()
+      if (docs) {
+        docs.forEach((doc) => {
+          const { from, to: { reference, type, url } = {} } = doc
 
-        if (source.endsWith('/')) source = source.slice(0, -1) // a trailing slash will break this redirect
+          let source = from
+            .replace(process.env.NEXT_PUBLIC_SERVER_URL, '')
+            .split('?')[0]
+            .toLowerCase()
 
-        let destination = '/'
+          if (source.endsWith('/')) source = source.slice(0, -1) // a trailing slash will break this redirect
 
-        if (type === 'custom' && url) {
-          destination = url.replace(process.env.NEXT_PUBLIC_SERVER_URL, '')
-        }
+          let destination = '/'
 
-        if (
-          type === 'reference' &&
-          typeof reference.value === 'object' &&
-          reference?.value?._status === 'published'
-        ) {
-          destination = `${process.env.NEXT_PUBLIC_SERVER_URL}/${
-            reference.relationTo !== 'pages' ? `${reference.relationTo}/` : ''
-          }${reference.value.slug}`
-        }
+          if (type === 'custom' && url) {
+            destination = url.replace(process.env.NEXT_PUBLIC_SERVER_URL, '')
+          }
 
-        const redirect = {
-          destination,
-          permanent: true,
-          source,
-        }
+          if (
+            type === 'reference' &&
+            typeof reference.value === 'object' &&
+            reference?.value?._status === 'published'
+          ) {
+            destination = `${process.env.NEXT_PUBLIC_SERVER_URL}/${
+              reference.relationTo !== 'pages' ? `${reference.relationTo}/` : ''
+            }${reference.value.slug}`
+          }
 
-        if (source.startsWith('/') && destination && source !== destination) {
-          return dynamicRedirects.push(redirect)
-        }
+          const redirect = {
+            destination,
+            permanent: true,
+            source,
+          }
 
-        return
-      })
+          if (source.startsWith('/') && destination && source !== destination) {
+            return dynamicRedirects.push(redirect)
+          }
+
+          return
+        })
+      }
+
+      const redirects = [internetExplorerRedirect, ...dynamicRedirects]
+      return redirects
+    } else {
+      throw new Error('Non-JSON response received')
     }
-
-    const redirects = [internetExplorerRedirect, ...dynamicRedirects]
-
-    return redirects
   } catch (error) {
     if (process.env.NODE_ENV === 'production') {
       console.error(`Error configuring redirects: ${error}`) // eslint-disable-line no-console
     }
 
-    return []
+    return [internetExplorerRedirect] // Return the IE redirect as a fallback
   }
 }
