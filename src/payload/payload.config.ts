@@ -1,7 +1,7 @@
 import { webpackBundler } from '@payloadcms/bundler-webpack' // bundler-import
-import { postgresAdapter } from '@payloadcms/db-postgres' // database-adapter-import
 import type { GenerateTitle } from '@payloadcms/plugin-seo/types'
 
+import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { payloadCloud } from '@payloadcms/plugin-cloud'
 // import formBuilder from '@payloadcms/plugin-form-builder'
 import nestedDocs from '@payloadcms/plugin-nested-docs'
@@ -98,10 +98,10 @@ export default buildConfig({
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
   // database-adapter-config-start
-  db: postgresAdapter({
-    pool: {
-      connectionString: process.env.DATABASE_URI,
-    },
+  db: mongooseAdapter({
+    // Mongoose-specific arguments go here.
+    // URL is required.
+    url: process.env.DATABASE_URI,
   }),
   // database-adapter-config-end
   plugins: [
